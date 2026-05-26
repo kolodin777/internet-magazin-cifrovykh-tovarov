@@ -1,0 +1,36 @@
+# IDE and local environments
+.idea/
+.vscode/
+.venv/
+venv/
+
+# Python
+__pycache__/
+*.py[cod]
+*.sqlite3
+.pytest_cache/
+
+# Environment variables
+.env
+**/.env
+!.env.example
+!**/.env.example
+
+# Django media and collected static files
+backend/media/
+backend/staticfiles/
+
+# Frontend dependencies and build output
+frontend/node_modules/
+frontend/build/
+frontend/.cache/
+
+# Logs and operating-system files
+*.log
+.DS_Store
+Thumbs.db
+
+# Temporary office files
+~$*.docx
+~$*.xlsx
+~$*.pptx
