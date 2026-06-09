@@ -4,7 +4,7 @@
 
 Траектория В: Django REST Framework + React SPA + JWT + AJAX + WebSocket.
 
-## Пояснительная записка
+## [Пояснительная записка](https://disk.yandex.ru/i/39tZWRKzgbsrzw)
 
 ### Содержание
 
