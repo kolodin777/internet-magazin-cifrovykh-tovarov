@@ -1,0 +1,38 @@
+@startuml
+title Логическая схема DDL-ограничений
+skinparam shadowing false
+
+class "UNIQUE" as uniq {
+  users_user_username
+  products_category_slug
+  products_product_slug
+  cart_cart_user
+  products_favorite_user_product
+  cart_cartitem_cart_product
+  orders_order_user_product
+}
+
+class "FOREIGN KEY" as fk {
+  product_category_id_to_category_id
+  product_author_id_to_user_id
+  comment_user_id_to_user_id
+  comment_product_id_to_product_id
+  favorite_user_id_to_user_id
+  favorite_product_id_to_product_id
+  cart_user_id_to_user_id
+  cartitem_cart_id_to_cart_id
+  cartitem_product_id_to_product_id
+  order_user_id_to_user_id
+  order_product_id_to_product_id
+}
+
+class "Правила удаления" as delete_rules {
+  category_to_product_protect
+  author_to_product_set_null
+  product_to_comment_favorite_cascade
+  user_to_cart_order_comment_favorite_cascade
+}
+
+uniq .. fk
+fk .. delete_rules
+@enduml

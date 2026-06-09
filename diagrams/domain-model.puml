@@ -1,0 +1,75 @@
+@startuml
+title Доменная модель интернет-магазина
+skinparam classAttributeIconSize 0
+skinparam shadowing false
+
+class User {
+  +username
+  +email
+  +bio
+  +phone
+  +isStaff
+  +register()
+  +authenticate()
+}
+
+class Category {
+  +title
+  +slug
+}
+
+class Product {
+  +title
+  +description
+  +price
+  +file
+  +isActive
+  +downloads
+  +publish()
+  +download()
+}
+
+class Cart {
+  +totalPrice
+  +totalItems
+  +addProduct()
+  +removeProduct()
+  +clear()
+}
+
+class CartItem {
+  +quantity
+  +totalPrice
+  +changeQuantity()
+}
+
+class Order {
+  +purchasedAt
+  +create()
+  +grantDownload()
+}
+
+class Favorite {
+  +createdAt
+  +toggle()
+}
+
+class Comment {
+  +text
+  +createdAt
+  +publish()
+  +delete()
+}
+
+User "1" -- "0..*" Product : автор
+Category "1" -- "0..*" Product : классифицирует
+User "1" -- "1" Cart
+Cart "1" *-- "0..*" CartItem
+CartItem "0..*" --> "1" Product
+User "1" -- "0..*" Order
+Order "0..*" --> "1" Product
+User "1" -- "0..*" Favorite
+Favorite "0..*" --> "1" Product
+User "1" -- "0..*" Comment
+Comment "0..*" --> "1" Product
+@enduml

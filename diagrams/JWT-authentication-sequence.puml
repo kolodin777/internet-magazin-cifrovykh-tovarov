@@ -1,0 +1,37 @@
+@startuml
+title Последовательность JWT-аутентификации
+autonumber
+actor "Пользователь" as User
+participant "React Login" as UI
+participant "Axios API Client" as Axios
+participant "Django SimpleJWT" as JWT
+database "База данных" as DB
+participant "Защищённый API" as API
+
+User -> UI : вводит логин и пароль
+UI -> Axios : POST /api/auth/login/
+Axios -> JWT : username, password
+JWT -> DB : найти пользователя
+DB --> JWT : пользователь + hash пароля
+JWT -> JWT : проверить пароль\nсоздать access и refresh
+JWT --> Axios : 200 {access, refresh}
+Axios --> UI : сохранить токены
+
+User -> UI : открывает защищённый раздел
+UI -> Axios : GET /api/orders/my_orders/
+Axios -> API : Authorization: Bearer access
+API -> JWT : проверить access
+JWT --> API : authenticated user
+API -> DB : получить заказы пользователя
+DB --> API : список заказов
+API --> UI : 200 JSON
+
+alt access-токен истёк
+  Axios -> JWT : POST /api/auth/token/refresh/
+  JWT --> Axios : новый access
+  Axios -> API : повторить исходный запрос
+  API --> UI : результат
+else refresh недействителен
+  Axios --> UI : завершить сеанс\nперейти на /login
+end
+@enduml

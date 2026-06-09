@@ -1,0 +1,26 @@
+@startuml
+title Состояния доступа пользователя к цифровому товару
+skinparam shadowing false
+
+[*] --> Guest
+Guest : каталог доступен
+Guest : покупка и избранное недоступны
+
+Guest --> Authenticated : успешный вход
+Authenticated --> InCart : добавить в корзину
+Authenticated --> Favorite : добавить в избранное
+Favorite --> Authenticated : убрать из избранного
+InCart --> Authenticated : удалить из корзины
+InCart --> Purchased : создать заказ
+Authenticated --> Purchased : купить сразу
+
+Purchased : заказ принадлежит пользователю
+Purchased : доступна кнопка скачивания
+Purchased --> Downloaded : GET /orders/{id}/download/
+Downloaded : получен TXT-файл
+Downloaded : увеличен downloads
+Downloaded --> Purchased : повторное скачивание
+
+Authenticated --> Guest : выход
+Purchased --> Guest : выход\n(заказ сохраняется в БД)
+@enduml

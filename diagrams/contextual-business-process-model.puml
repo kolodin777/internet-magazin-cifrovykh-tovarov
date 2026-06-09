@@ -1,0 +1,34 @@
+@startuml
+title Контекстная модель бизнес-процесса
+left to right direction
+skinparam shadowing false
+
+actor "Покупатель" as Buyer
+actor "Администратор" as Admin
+cloud "Интернет" as Internet
+rectangle "Интернет магазин цифровых товаров" as Shop
+database "База данных" as DB
+folder "Хранилище\nцифровых товаров" as Storage
+
+Buyer --> Internet : запросы каталога,\nпокупки, комментарии
+Internet --> Shop : HTTP / WebSocket
+Shop --> Internet : страницы, JSON,\nTXT-файлы, события
+Internet --> Buyer : результат операций
+
+Admin --> Shop : управление товарами,\nкатегориями и комментариями
+Shop --> Admin : сведения о товарах\nи пользовательской активности
+
+Shop --> DB : чтение и запись\nпользователей, товаров,\nкорзин, заказов
+DB --> Shop : сохранённые данные
+Shop --> Storage : получение файла\nкупленного товара
+Storage --> Shop : цифровой контент
+
+note bottom of Shop
+Основные процессы:
+1. Просмотр и поиск товаров
+2. Управление корзиной и избранным
+3. Покупка и скачивание
+4. Комментарии в реальном времени
+5. Администрирование каталога
+end note
+@enduml

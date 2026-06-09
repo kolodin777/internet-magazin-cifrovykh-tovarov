@@ -1,0 +1,34 @@
+@startuml
+title Сохранение комментария и real-time уведомление
+autonumber
+actor "Пользователь A" as A
+participant "ProductComments A" as ClientA
+participant "JWT WebSocket Middleware" as Middleware
+participant "ProductCommentConsumer" as Consumer
+database "База данных" as DB
+queue "Channel Layer" as Layer
+participant "ProductComments B" as ClientB
+actor "Пользователь B" as B
+
+A -> ClientA : вводит комментарий
+ClientA -> Middleware : WSS connect?token=JWT
+Middleware -> DB : определить пользователя по token
+DB --> Middleware : User A
+Middleware -> Consumer : authenticated scope
+Consumer -> Layer : group_add(product_comments_ID)
+Consumer --> ClientA : connection accepted
+
+ClientA -> Consumer : {type: comment, text, client_id}
+Consumer -> Consumer : проверить длину 1..1000
+Consumer -> DB : INSERT Comment
+DB --> Consumer : сохранённый комментарий
+Consumer -> Layer : group_send(comment.created)
+Layer --> Consumer : событие группы
+Consumer --> ClientA : новый комментарий
+Layer --> ClientB : новый комментарий
+ClientB --> B : мгновенно обновить список
+
+alt комментарий пустой или слишком длинный
+  Consumer --> ClientA : {type: error, message}
+end
+@enduml

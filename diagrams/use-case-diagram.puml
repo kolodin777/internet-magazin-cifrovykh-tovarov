@@ -1,0 +1,60 @@
+@startuml
+title Диаграмма вариантов использования интернет магазина цифровых товаров
+left to right direction
+skinparam packageStyle rectangle
+skinparam shadowing false
+
+actor "Гость" as Guest
+actor "Покупатель" as Buyer
+actor "Администратор" as Admin
+
+Buyer --|> Guest
+Admin --|> Buyer
+
+rectangle "Интернет магазин цифровых товаров" {
+  usecase "Просматривать каталог" as UC1
+  usecase "Искать и фильтровать товары" as UC2
+  usecase "Просматривать карточку товара" as UC3
+  usecase "Регистрироваться" as UC4
+  usecase "Входить в систему" as UC5
+  usecase "Управлять профилем" as UC6
+  usecase "Добавлять товар в корзину" as UC7
+  usecase "Управлять корзиной" as UC8
+  usecase "Добавлять товар в избранное" as UC9
+  usecase "Просматривать избранное" as UC10
+  usecase "Покупать цифровой товар" as UC11
+  usecase "Просматривать покупки" as UC12
+  usecase "Скачивать купленный товар" as UC13
+  usecase "Читать комментарии" as UC14
+  usecase "Публиковать комментарии\nв реальном времени" as UC15
+  usecase "Создавать и изменять товары" as UC16
+  usecase "Управлять категориями" as UC17
+  usecase "Удалять чужие комментарии" as UC18
+}
+
+Guest --> UC1
+Guest --> UC2
+Guest --> UC3
+Guest --> UC4
+Guest --> UC5
+Guest --> UC14
+
+Buyer --> UC6
+Buyer --> UC7
+Buyer --> UC8
+Buyer --> UC9
+Buyer --> UC10
+Buyer --> UC11
+Buyer --> UC12
+Buyer --> UC13
+Buyer --> UC15
+
+Admin --> UC16
+Admin --> UC17
+Admin --> UC18
+
+UC1 .> UC2 : <<include>>
+UC11 .> UC5 : <<include>>
+UC13 .> UC12 : <<include>>
+UC15 .> UC5 : <<include>>
+@enduml

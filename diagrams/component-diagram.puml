@@ -1,0 +1,63 @@
+@startuml
+title Компонентная диаграмма интернет магазина цифровых товаров
+skinparam componentStyle rectangle
+skinparam shadowing false
+
+actor "Пользователь" as User
+
+package "Frontend: React SPA" {
+  [React Router] as Router
+  [Страницы и компоненты] as UI
+  [AuthContext] as Auth
+  [CartContext] as CartCtx
+  [React Query] as Query
+  [Axios API Client] as Axios
+  [WebSocket Client] as WSClient
+}
+
+package "Backend: Django" {
+  [Django REST Framework] as DRF
+  [JWT Authentication] as JWT
+  [Products API] as ProductsAPI
+  [Cart API] as CartAPI
+  [Orders API] as OrdersAPI
+  [Users API] as UsersAPI
+  [Django Channels] as Channels
+  [JWT WebSocket Middleware] as WSMiddleware
+  [Comment Consumer] as Consumer
+  [Django ORM] as ORM
+}
+
+database "SQLite / PostgreSQL" as DB
+queue "InMemory / Redis\nChannel Layer" as Redis
+folder "Media / цифровые файлы" as Media
+
+User --> Router
+Router --> UI
+UI --> Auth
+UI --> CartCtx
+UI --> Query
+Auth --> Axios
+CartCtx --> Axios
+Query --> Axios
+UI --> WSClient
+
+Axios --> DRF : HTTPS / JSON
+DRF --> JWT
+DRF --> ProductsAPI
+DRF --> CartAPI
+DRF --> OrdersAPI
+DRF --> UsersAPI
+ProductsAPI --> ORM
+CartAPI --> ORM
+OrdersAPI --> ORM
+UsersAPI --> ORM
+ORM --> DB
+OrdersAPI --> Media
+
+WSClient --> WSMiddleware : WSS + JWT
+WSMiddleware --> Channels
+Channels --> Consumer
+Consumer --> ORM
+Consumer --> Redis
+@enduml

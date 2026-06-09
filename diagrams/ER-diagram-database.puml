@@ -1,0 +1,101 @@
+@startuml
+title ER-диаграмма базы данных интернет магазина цифровых товаров
+hide circle
+skinparam linetype ortho
+skinparam shadowing false
+
+entity "users_user" as users {
+  * id : bigint <<PK>>
+  --
+  username : varchar <<UQ>>
+  email : varchar
+  password : varchar
+  bio : text
+  avatar : varchar
+  phone : varchar(20)
+  is_staff : boolean
+  is_active : boolean
+}
+
+entity "products_category" as categories {
+  * id : bigint <<PK>>
+  --
+  title : varchar(150)
+  slug : varchar <<UQ>>
+}
+
+entity "products_product" as products {
+  * id : bigint <<PK>>
+  --
+  title : varchar(200)
+  slug : varchar <<UQ>>
+  description : text
+  category_id : bigint <<FK>>
+  author_id : bigint <<FK, NULL>>
+  price : decimal(10,2)
+  file : varchar
+  is_active : boolean
+  downloads : integer
+  created_at : datetime
+  updated_at : datetime
+}
+
+entity "products_comment" as comments {
+  * id : bigint <<PK>>
+  --
+  product_id : bigint <<FK>>
+  user_id : bigint <<FK>>
+  text : text
+  created_at : datetime
+}
+
+entity "products_favorite" as favorites {
+  * id : bigint <<PK>>
+  --
+  product_id : bigint <<FK>>
+  user_id : bigint <<FK>>
+  created_at : datetime
+  --
+  UNIQUE(user_id, product_id)
+}
+
+entity "cart_cart" as carts {
+  * id : bigint <<PK>>
+  --
+  user_id : bigint <<FK, UQ>>
+  created_at : datetime
+  updated_at : datetime
+}
+
+entity "cart_cartitem" as cart_items {
+  * id : bigint <<PK>>
+  --
+  cart_id : bigint <<FK>>
+  product_id : bigint <<FK>>
+  quantity : integer
+  --
+  UNIQUE(cart_id, product_id)
+}
+
+entity "orders_order" as orders {
+  * id : bigint <<PK>>
+  --
+  user_id : bigint <<FK>>
+  product_id : bigint <<FK>>
+  purchased_at : datetime
+  --
+  UNIQUE(user_id, product_id)
+}
+
+categories ||--o{ products : category
+users |o--o{ products : author
+users ||--o{ comments : writes
+products ||--o{ comments : receives
+users ||--o{ favorites : owns
+products ||--o{ favorites : selected
+users ||--|| carts : has
+carts ||--o{ cart_items : contains
+products ||--o{ cart_items : included
+users ||--o{ orders : makes
+products ||--o{ orders : purchased
+@enduml

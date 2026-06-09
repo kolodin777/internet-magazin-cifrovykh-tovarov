@@ -1,0 +1,30 @@
+@startuml
+title Диаграмма развёртывания интернет магазина цифровых товаров
+skinparam shadowing false
+
+node "Клиентское устройство" {
+  artifact "Web Browser" as Browser
+  artifact "React SPA" as React
+}
+
+node "Web/Application Server" {
+  artifact "Static frontend build" as Static
+  node "Daphne / ASGI" {
+    artifact "Django REST API" as API
+    artifact "Django Channels" as Channels
+  }
+}
+
+database "PostgreSQL\n(SQLite в разработке)" as DB
+node "Redis\n(InMemory в разработке)" as Redis
+folder "Media Storage" as Media
+
+Browser -- React
+React --> Static : HTTPS
+React --> API : HTTPS / JSON / JWT
+React --> Channels : WSS / JWT
+API --> DB : ORM
+Channels --> DB : ORM
+Channels --> Redis : channel layer
+API --> Media : цифровые файлы
+@enduml
